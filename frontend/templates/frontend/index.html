@@ -1,0 +1,21 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+    <div >
+        <ul id="radio-list"></ul>
+    </div>
+    <script>
+        fetch('/api/radios')
+        .then(response => response.json())
+        .then(data => {
+            feed = data['feed']
+            radios = document.querySelector("#radio-list")
+            for (var i = 0; i < feed.length; i ++) {
+                radios.innerHTML += `<li><a href="/radio/${feed[i]['id']}">${feed[i]['radio_name']} <a/></li>`
+            }
+            console.log(data)
+        })
+    </script>
+{% endblock %}
