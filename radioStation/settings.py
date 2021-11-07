@@ -25,7 +25,6 @@ SECRET_KEY = 'django-insecure-c1w^38!dru!vloc82ra2*y*mja3)6azdh%gva(vb$$u@^g9+#i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ["radiohr.herokuapp.com"]
 
 # Application definition
@@ -37,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'frontend',
     'api',
     'stations',
