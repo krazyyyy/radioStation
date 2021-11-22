@@ -12,6 +12,10 @@ def getRadios(request):
     li = []
     for radio in radios:
         n = model_to_dict(radio)
+        n.pop("radio_img", None)
+        if radio.radio_img:
+            n['img'] = radio.radio_img.url
+
         li.append(n)
     radio_feed = dict(feed=li)
     return JsonResponse(radio_feed)
@@ -46,6 +50,7 @@ def getRecentPlaying(request, pk):
         radios = radio_history.radio_history_session.all().order_by('-id')[:10]
         li = []
         for i in radios:
+
             n = model_to_dict(i)
             li.append(n)
         radio_history = dict(history=li)

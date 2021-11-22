@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-c1w^38!dru!vloc82ra2*y*mja3)6azdh%gva(vb$$u@^g9+#i
 DEBUG = True
 
 ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ["radiohr.herokuapp.com"]
+# ALLOWED_HOSTS = ["radiohr.herokuapp.com"]
 
 # Application definition
 
@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'frontend',
     'api',
     'stations',
@@ -127,6 +126,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 import os
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
