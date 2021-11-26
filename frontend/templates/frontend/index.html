@@ -1,21 +1,227 @@
 {% extends 'frontend/base.html' %}
-
+{% load static %}
 {% block title %} Home {% endblock %}
 
 {% block body %}
-    <div >
-        <ul id="radio-list"></ul>
+    <div class="row ">
+        {% include 'frontend/sidebar.html' %}
+        <div class="wid-100 background-light pl-1 pr-1  ">
+        {% include 'frontend/header.html' %}
+        <main class="row justify-between">
+            <div class="row wid-100 dir-col row-gap-2 ">
+                <div class="player row align-center justify-between dir-col-onxs row-gap-3">
+                    <div class="playermainactions row align-center col-gap-1">
+                        <div class="prev">
+                            <img src="{% static 'frontend/assets/prevPlay.svg' %}" alt="">
+
+                        </div>
+                        <div class="play">
+                            <img id="playbtn" src="{% static 'frontend/assets/play.svg' %}" alt="">
+                        </div>
+                        <div class="next">
+                            <img src="{% static 'frontend/assets/nextPlay.svg' %}" alt="">
+                        </div>
+
+                    </div>
+                    <div class="player_progress wid-100 ml-2 mr-2">
+                        <span class="artist_name" id="stationName"></span>
+                        <span class="player_progressbar"></span>
+                        <span class="radio_title" id="currentPlaying"></span>
+                        <audio id="audio" style="display: none;"></audio>
+                        <input type="hidden"  id="stationID">
+
+                    </div>
+                    <div class="playerextraactions row align-center col-gap-1">
+
+                        <div class="addtofavIcon">
+                            <img src="{% static 'frontend/assets/music.svg' %}" alt="">
+                            <img class="plusicon" src="{% static 'frontend/assets/plus.svg' %}" alt="">
+                        </div>
+                        <div class="repeat-player">
+                            <img class="repeat-player1" src="{% static 'frontend/assets/autoplay1.svg' %}" alt="">
+                            <span>
+                                1
+                            </span>
+                            <img class="repeat-player2" src="{% static 'frontend/assets/autoplay2.svg' %}" alt="">
+
+                        </div>
+                        <div class="row align-center">
+                            <img src="{% static 'frontend/assets/deck.svg' %}" alt="">
+                            <img src="{% static 'frontend/assets/volume.svg' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="background-white p-1  b-rad-18">
+                    <div class="row justify-between">
+                        <h2 class="color-pink text-uppercase mb-1">Popular</h2>
+                        <span>Slijedeći ></span>
+                    </div>
+                    <div id="radio-list" class="radio_cards row justify-between wrap">
+                        
+                    </div>
+                </div>
+                <div class="background-white p-1  b-rad-18">
+                    <div class="row justify-between">
+                        <h2 class="color-pink text-uppercase mb-1">Popular</h2>
+                        <span>Slijedeći ></span>
+                    </div>
+                    <div id="radio-list1" class="radio_cards row justify-between wrap">
+                      
+                    </div>
+                </div>
+                <div class="row justify-between dir-col-onmob row-gap-2">
+                    <div class="col-6 col-12-mob background-white p-1  b-rad-18">
+                        <div class="row justify-between">
+                            <h2 class=" text-uppercase mb-1">Top Collection</h2>
+                            <span>Učitaj sve</span>
+                        </div>
+                        <div id="radio-list2" class="row justify-between wrap row-gap-1">
+                           
+                    
+                        </div>
+                    </div>
+                    <div class="col-6 col-12-mob background-white p-1  b-rad-18">
+                        <div class="row justify-between">
+                            <h2 class=" text-uppercase mb-1">Top Kategorije</h2>
+                            <span>More list</span>
+                        </div>
+                        <div class="row wrap col-gap-1 row-gap-1 top-genre-list">
+                            <a href="{% url 'genrePage' 'news' %}" class="pl-1 pr-1">News</a>
+                            <a href="{% url 'genrePage' 'rock' %}" class="pl-1 pr-1">Rock</a>
+                            <a href="{% url 'genrePage' 'top 40' %}" class="pl-1 pr-1">Top 40</a>
+                            <a href="{% url 'genrePage' 'jazz' %}" class="pl-1 pr-1">Jazz</a>
+                            <a href="{% url 'genrePage' 'pop' %}" class="pl-1 pr-1">Pop</a>
+                            <a href="{% url 'genrePage' 'alternative rock' %}" class="pl-1 pr-1">Alternative Rock</a>
+                            <a href="{% url 'genrePage' 'talk' %}" class="pl-1 pr-1">Talk</a>
+                            <a href="{% url 'genrePage' 'sports' %}" class="pl-1 pr-1">Sports</a>
+                           
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-3  background-white mt-2 ml-2 p-1 play-history">
+                <span onclick="closePlayHistory()" class="times showontablet"><strong>X</strong></span>
+                <h2>Play history</h2>
+                <div class="row dir-col row-gap-1 mt-2" id="recentPlayingList">
+              
+                  
+                </div>
+            </div>
+        </main>   
+        </div>
+
     </div>
+
     <script>
         fetch('/api/radios')
         .then(response => response.json())
         .then(data => {
             feed = data['feed']
             radios = document.querySelector("#radio-list")
+            radios1 = document.querySelector("#radio-list1")
+            radios2 = document.querySelector("#radio-list2")
             for (var i = 0; i < feed.length; i ++) {
-                radios.innerHTML += `<li><a href="/radio/${feed[i]['id']}">${feed[i]['radio_name']} <a/></li>`
+                if ( i < 5) {
+                radios.innerHTML += `<a href="/radio/${feed[i]['id']}" class="radio_card col-2 col-4-tablet col-6-xs">
+                            <div class="radio_card_img img_container background-gray">
+                                <img src=${feed[i]['img']}>
+                            </div>
+                            <div class="radio_card_detail mt-halfrem text-center">
+                                <span class="lead "><strong>${feed[i]['radio_name']} </strong></span>
+                            </div>
+                                </a>`
+                }
+                else if ( i > 5 && i < 11 ) {
+                radios1.innerHTML += `<a href="/radio/${feed[i]['id']}" class="radio_card col-2 col-4-tablet col-6-xs">
+                            <div class="radio_card_img img_container background-gray">
+                                <img src=${feed[i]['img']}>
+                            </div>
+                            <div class="radio_card_detail mt-halfrem text-center">
+                                <span class="lead "><strong>${feed[i]['radio_name']} </strong></span>
+                            </div>
+                                </a>`
+                
             }
-            console.log(data)
+            else {
+                radios2.innerHTML += `
+                <a href="/radio/${feed[i]['id']}" class="col-4 " title="${feed[i]['radio_name']}">
+                        <div class="background-gray radio_card_img img_container">
+                                <img src=${feed[i]['img']} title="${feed[i]['radio_name']}" alt="${feed[i]['radio_name']}">
+                        </div>
+                </a>
+                `
+            }
+            }
         })
+        
+        fetch('/api/getRecents')
+        .then(response => response.json())
+        .then(data => {
+            recList = document.querySelector("#recentPlayingList")
+          for (var i = 0; i < data['history'].length; i ++ ) {
+            if (data['history'][i]['img_link'] != "" && data['history'][i]['img_link'] != null) {
+              im = `<img src='${data['history'][i]['img_link']}'>`
+            }
+            else {
+              im = ""
+            }
+            recList.innerHTML += `
+            <a href="#" class="row col-gap-1  align-center">
+                    <span class="color-gray side_bar_number col-2"> ${i}</span>
+                    <div class="side_bar_logo_img img_container background-gray">
+                      ${im}
+                    </div>
+                    <div >
+                        <span class="lead"><strong>${data['history'][i]['name']}</strong></span><br><br>
+                    </div>
+                    <div class=" side_bar_dots ml-auto  row ">
+                            <span class="side_bar_dot background-gray"></span>
+                            <span class="side_bar_dot background-gray"></span>
+                    </div>
+                    
+            </a>
+            
+            `
+        }
+        })
+
+        var audio = document.getElementById('audio');
+        var playbtn = document.getElementById("playbtn");
+         fetch('/api/getRandomRadio')
+        .then(response => response.json())
+        .then(data => {
+            audio.src =`${data['link']};`
+            document.querySelector("#stationID").value = data['radio_id']
+            document.querySelector("#stationName").innerHTML = data['radio_name']
+        })
+        
+        
+        playbtn.addEventListener('click', () => {
+        if (audio.paused || audio.ended) {
+            
+            audio.play()
+            playbtn.src = "/static/frontend/assets/pause.svg";
+            }
+        else {
+            
+            playbtn.src = "/static/frontend/assets/play.svg";
+            audio.pause();
+            }
+        })
+        function getCurrentName() {
+            fetch(`/api/currentPlaying/${document.querySelector("#stationID").value}`)
+            .then(response => response.json())
+            .then(data => {
+            document.querySelector("#currentPlaying").innerHTML = data['playing']
+            
+            })
+        
+        }
+         
+        setInterval(function(){
+            getCurrentName()
+        }, 10000);
     </script>
 {% endblock %}
