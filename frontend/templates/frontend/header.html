@@ -1,0 +1,42 @@
+{% load static %}
+
+<header class="row align-center row-gap-2 pr-1 mt-halfrem ">
+    <ul class="row navlist">
+        <li class="active">Music</li>
+        <li>Podcast</li>
+        <li>Radio</li>
+        <li>Live</li>
+    </ul>
+    <div class="header_search_wrapper ml-auto mr-1 hideontablet">
+        <input type="text" placeholder="Search... ">
+        <img src="{% static 'frontend/assets/search.svg' %}" alt="">
+    </div>
+    <ul class="row notificationList align-center ml-auto hideonxs">
+        <li class="hideonmobile">
+            <img src="{% static 'frontend/assets/heart.svg' %}" alt="">
+        </li>
+        <li class="notificationicon hideonmobile">
+            <img class="ring" src="{% static 'frontend/assets/ring.svg' %}" alt="">
+            <img class="ring1" src="{% static 'frontend/assets/ring2.svg' %}" alt="">
+        </li>
+        <li class="country ml-halfrem">
+            <span>Crotia</span>
+            <img class="ml-1" src="{% static 'frontend/assets/chevron-down.svg' %}" alt="">
+        </li>
+
+    </ul>
+</header>
+
+<div class="row justify-between pt-halfrem align-center showontablet">
+    <div onclick="openSidebar()" class="leftBars bars cursor-pointer">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+ <div class="logomob cursor-pointer"><a href="{% url 'index' %}"><h3 class="color-pink">Radio.Live</h3 ></a></div>
+ <div onclick="openPlayHistory()" class="rightBars bars cursor-pointer">
+     <span></span>
+     <span class="ml-auto"></span>
+     <span></span>
+ </div>
+ </div>

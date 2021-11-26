@@ -1,678 +1,213 @@
-<html>
-<head>
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+
+{% block title %} {{ radio.radio_name }}{% endblock %}
+
+{% block body %}
+<div class="row ">
+  {% include 'frontend/sidebar.html' %}
+  <div class="wid-100 background-light pl-1 pr-1  ">
+  {% include 'frontend/header.html' %}
+  <main class="row justify-between">
+    <div class="row wid-100 dir-col row-gap-2 ">
+        <div class="player row align-center justify-between dir-col-onxs row-gap-3">
+            <div class="playermainactions row align-center col-gap-1">
+                <div class="prev">
+                    <img src="{% static 'frontend/assets/prevPlay.svg' %}" alt="">
+
+                </div>
+                <div class="play">
+                    <img id="playbtn" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="">
+                </div>
+                <div class="next">
+                    <img src="{% static 'frontend/assets/nextPlay.svg' %}" alt="">
+                </div>
+
+            </div>
+            <div class="player_progress wid-100 ml-2 mr-2">
+                <span class="artist_name" id="currentPlaying"></span>
+                <span class="player_progressbar"></span>
+                <span class="radio_title">{{ radio.radio_name }}</span>
+                <audio id="audio" src="{{ radio.radio_link }};" style="display: none;"></audio>
+            </div>
+            <div class="playerextraactions row align-center col-gap-1">
+
+                <div class="addtofavIcon">
+                    <img src="./assets/music.svg" alt="">
+                    <img class="plusicon" src="./assets/plus.svg" alt="">
+                </div>
+                <div class="repeat-player">
+                    <img class="repeat-player1" src="./assets/autoplay1.svg" alt="">
+                    <span>
+                        1
+                    </span>
+                    <img class="repeat-player2" src="./assets/autoplay2.svg" alt="">
+
+                </div>
+                <div class="row align-center">
+                    <img src="{% static 'frontend/assets/deck.svg' %}" alt="">
+                    <img src="{% static 'fro/assets/volume.svg' %}" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="background-white p-1  b-rad-18">
+          <div class="row justify-between wrap ">
+              <div class="col-4 col-6-mob background-gray b-rad-18 radio_img mlr-auto" >
+                {% if radio.radio_img %}
+                  <img style="width: 348px;" src="{{ radio.radio_img.url }}" alt="{{ radio.radio_name }}">
+                {% endif %}
+              </div>
+              <div class="col-8 col-12-mob mt-2 mb-2">
+                  
+                  <h2 class="mb-1 radio-name row align-center col-gap-halfrem"><span><img id="playbtn1" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="Play/Pause"></span> {{ radio.radio_name }}</h2>
+                  
+                <div class="row align-center col-gap-halfrem">
+                    <img src="{% static 'frontend/assets/heart.svg' %}" alt="">
+                    <span class="lead cursor-pointer"><strong>Add to Favourites</strong></span>
+                </div>
+                </div>
+          </div>
+        </div>
+        <div class="background-white p-1  b-rad-18 row justify-between">
+           <div class="col-2 col-4-mob b-rad-18 background-gray">
+
+           </div>
+           <div class="col-10 col-8-mob">
+                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
+                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
+           </div>
+        </div>
+        <div class="background-white p-1  b-rad-18 row justify-between">
+           <div class="col-2 col-4-mob b-rad-18 background-gray">
+
+           </div>
+           <div class="col-10 col-8-mob">
+                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
+                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
+           </div>
+        </div>
+        <div class="background-white p-1  b-rad-18 row justify-between">
+           <div class="col-2 col-4-mob b-rad-18 background-gray">
+
+           </div>
+           <div class="col-10 col-8-mob">
+                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
+                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
+           </div>
+        </div>
+        <div class="background-white p-1  b-rad-18 row justify-between">
+           <div class="col-2 col-4-mob b-rad-18 background-gray">
+
+           </div>
+           <div class="col-10 col-8-mob">
+                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
+                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
+           </div>
+        </div>
+      
+
+    </div>
+    <div class="col-3  background-white mt-2 ml-2 p-1 play-history">
+        <span onclick="closePlayHistory()" class="times showontablet"><strong>X</strong></span>
+        <h2>Play history</h2>
+        <div id="recentPlayingList" class="row dir-col row-gap-1 mt-2">
+      
+            
+          
+            
+        </div>
+    </div>
+</main>
+
+  </div>
+</div>
 
-</head>
-</html>
-<html lang = "en-US">
-<head>
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-</head>
-</html>
-<html>
-<head>
-    <style type="text/css">
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
-body {
-  background: #ff564c;
-  padding: 0;
-  margin: 0;
-}
-
-@keyframes harlem {
-  0% {
-    transform: scale(1);
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-  }
-  20% {
-    transform: scale(1.03, 1);
-    -webkit-transform: scale(1.03, 1);
-    -moz-transform: scale(1.03, 1);
-    -o-transform: scale(1.03, 1);
-    -ms-transform: scale(1.03, 1);
-  }
-  40% {
-    transform: scale(0.97, 1);
-    -webkit-transform: scale(0.97, 1);
-    -moz-transform: scale(0.97, 1);
-    -o-transform: scale(0.97, 1);
-    -ms-transform: scale(0.97, 1);
-  }
-  60% {
-    transform: scale(1.01, 1);
-    -webkit-transform: scale(1.01, 1);
-    -moz-transform: scale(1.01, 1);
-    -o-transform: scale(1.01, 1);
-    -ms-transform: scale(1.01, 1);
-  }
-  80% {
-    transform: scale(0.99, 1);
-    -webkit-transform: scale(0.99, 1);
-    -moz-transform: scale(0.99, 1);
-    -o-transform: scale(0.99, 1);
-    -ms-transform: scale(0.99, 1);
-  }
-  100% {
-    transform: scale(1);
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-  }
-}
-
-h2 {
-  margin: 0;
-  padding: 0;
-  font-size: 10px;
-  line-height: 10px;
-  letter-spacing: 2.5px;
-  font-family: 'Open Sans';
-  font-weight: 700;
-  color: #fff;
-}
-
-h3 {
-  margin: 0;
-  padding: 0;
-  font-size: 11px;
-  line-height: 11px;
-  font-family: 'Open Sans';
-  font-weight: 400;
-  color: #777;
-}
-
-h4 {
-  margin: 0 0 5px 29px;
-  padding: 0;
-  font-size: 14px;
-  line-height: 14px;
-  font-family: 'Open Sans';
-  font-weight: 700;
-  color: #fff;
-}
-
-h5 {
-  margin: 0;
-  padding: 0;
-  font-size: 13px;
-  line-height: 13px;
-  font-family: 'Open Sans';
-  font-weight: 700;
-  color: #6d6d6d;
-}
-
-h6 {
-  margin: 0;
-  padding: 0;
-  font-size: 13px;
-  line-height: 13px;
-  font-family: 'Open Sans';
-  font-weight: 700;
-  color: #f0f0f0;
-}
-
-.screen {
-  background-color: #fff;
-  padding: 0;
-  height: 650px;
-  width: 366px;
-  position: absolute;
-  left: 50%;
-	top: 0;
-	transform: translate(-50%, 0);
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  margin: 30px 0;
-}
-
-.header {
-  display: inline-flex;
-  margin: 0 0 40px 0;
-}
-
-input[type=checkbox] {
-  visibility: hidden;
-  margin: 0;
-  padding: 0;
-  z-index: 10;
-}
-
-label.main:before {
-  position: absolute;
-  top: 23px;
-  left: 23px;
-  font-family: FontAwesome;
-  content: '\f0c9';
-  color: #959595;
-  font-size: 16px;
-  line-height: 16px;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s ease-in;
-}
-
-label.main:hover:before {
-  color: #bbb;
-}
-
-.screen > #magicButton:checked ~ label.main:before {
-  color: #ff564c;
-  transition: all 0.3s ease-in;
-}
-
-.coverImage {
-  background-size: cover;
-  padding: 0;
-  margin: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: 0% 0%;
-  transition: all 0.3s ease-in;
-}
-
-.screen > #magicButton:checked ~ .coverImage {
-  transform: scale(0.251, 0.251);
-  left: 23px;
-  top: 60px;
-  transition: all 0.3s ease-in;
-  border-radius: 20px;
-}
-
-.search:before {
-  position: absolute;
-  top: 23px;
-  right: 23px;
-  font-family: FontAwesome;
-  content: '\f002';
-  color: #959595;
-  font-size: 16px;
-  line-height: 16px;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s ease-in;
-}
-
-.search:hover:before {
-  color: #bbb;
-}
-
-.bodyPlayer {
-  position: absolute;
-  top: 366px;
-  left: 0;
-  margin: 0;
-  padding: 0;
-  height: 286px;
-  width: 366px;
-  background: #111;
-  transition: all 0.3s ease-in;
-}
-
-.screen > #magicButton:checked ~ .bodyPlayer {
-  height: 470px;
-  left: 0;
-  top: 180px;
-  transition: all 0.3s ease-in;
-}
-
-.list {
-  border-spacing: 0px 2px;
-  width: 342px;
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  top: 378px;
-  left: 12px;
-  transform-origin: 0% 0%;
-  transform: scale(0.1, 0.1);
-  transition: all 0.3s ease-in;
-}
-
-.list tr {
-  transform-origin: 0% 50%;
-  height: 50px;
-  text-align: center;
-  background: #1d1d1d;
-  text-indent: 8px;
-}
-
-.list tr:hover {
-  background: #222;
-  cursor: pointer;
-}
-
-.title {
-  width: 215px;
-  text-align: left;
-  text-indent: 15px;
-  transition: all 0.11s ease-in;
-}
-
-.list tr:hover .title {
-  padding-left: 5px;
-  width: 210px;
-  transition: all 0.11s ease-in;
-}
-
-.screen > #magicButton:checked ~ .list {
-  top: 192px;
-  left: 12px;
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1, 1);
-  transition: all 0.3s ease-in;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(1) {
-  opacity: 1;
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.185s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(2) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.2s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(3) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.215s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(4) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.23s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(5) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.245s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(6) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.26s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(7) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.275s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(8) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.29s;
-}
-
-.screen > #magicButton:checked ~ table tr:nth-child(9) {
-  animation: harlem 0.3s linear forwards;
-  animation-delay: 0.305s;
-}
-
-label.zmr:before {
-  font-family: FontAwesome;
-  content: "\f08a";
-  color: #777;
-  font-size: 15px;
-  line-height: 15px;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.15s linear;
-}
-
-td > #heart:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart1:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart2:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart3:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart4:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart5:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart6:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart7:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #heart8:checked ~ label.zmr:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-.bar {
-  background: url('http://imgh.us/bar_3.svg') no-repeat;
-  background-size: 100%;
-  width: 320px;
-  height: 21px;
-  position: absolute;
-  top: 407px;
-  left: 23px;
-  transform-origin: 0% 0%;
-  transition: all 0.3s ease-in;
-}
-
-.screen > #magicButton:checked ~ .bar {
-  top: 119px;
-  left: 126px;
-  transform: scale(0.6875, 0.6875);
-  transition: all 0.3s ease-in;
-}
-
-.info {
-  width: 157px;
-  position: absolute;
-  left: 104px;
-  top: 440px;
-  transition: all 0.3s ease-in;
-}
-
-.screen > #magicButton:checked ~ .info {
-  top: 66px;
-  left: 126px;
-  text-align: left;
-  transition: all 0.3s ease-in;
-}
-
-.screen > #magicButton:checked ~ .info h4 {
-  margin-left: 0;
-  font-size: 16px;
-  color: #111111;
-  transition: all 0.3s ease-in;
-}
-
-.player {
-  background: none;
-  text-align: center;
-  font-family: FontAwesome;
-  color: #fff;
-  font-size: 26px;
-  line-height: 26px;
-  width: 216px;
-  height: 35px;
-  position: absolute;
-  bottom: 100px;
-  left: 48%;
-  transform: translate(-50%, 0);
-  z-index: 10;
-  transition: all 0.3s ease-in;
-  border-spacing: 0;
-}
-
-.player td {
-  width: 72px;
-}
-
-.backward:before {
-  content: "\f04a";
-  cursor: pointer;
-  transition: all 0.15s linear;
-}
-
-.play:before {
-  content: "\f04b";
-  cursor: pointer;
-  transition: all 0.15s linear;
-}
-
-.forward:before {
-  content: "\f04e";
-  cursor: pointer;
-  transition: all 0.15s linear;
-}
-
-.backward:hover:before {
-  color: #bbb;
-  transition: all 0.15s linear;
-}
-
-.play:hover:before {
-  color: #bbb;
-  transition: all 0.15s linear;
-}
-
-.forward:hover:before {
-  color: #bbb;
-  transition: all 0.15s linear;
-}
-
-td > #play:checked ~ label.play:before {
-  content: "\f04c";
-  transition: all 0.15s linear;
-}
-
-.screen > #magicButton:checked ~ .player {
-  bottom: 4px;
-  left: -44px;
-  transform: scale(0.45, 0.45);
-  transition: all 0.3s ease-in;
-}
-
-.shadow {
-  background: rgba(17, 17, 17, 0.8);
-  width: 366px;
-  height: 50px;
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  box-shadow: 0px -15px 40px rgba(17, 17, 17, 0.8);
-}
-
-.footer {
-  background: none;
-  font-family: FontAwesome;
-  color: #6d6d6d;
-  font-size: 15px;
-  line-height: 15px;
-  height: 45px;
-  width: 360px;
-  position: absolute;
-  bottom: 10px;
-  left: 23px;
-  z-index: 20;
-  transition: all 0.15s linear;
-  transition: bottom 0.3s linear;
-}
-
-.love:before {
-  content: "\f08a";
-  cursor: pointer;
-  transition: all 0.15s linear;
-}
-
-.shuffle:before {
-  content: "\f074";
-  cursor: pointer;
-  transition: all 0.15s linear;
-}
-
-.repeat:before {
-  content: "\f01e";
-  cursor: pointer;
-  transition: all 0.15s linear;
-}
-
-.options:before {
-  content: "\f141";
-  cursor: pointer;
-  transition: all 0.15s linear;
-}
-
-.love:hover:before {
-  color: #bbb;
-  transition: all 0.15s linear;
-}
-
-.shuffle:hover:before {
-  color: #bbb;
-  transition: all 0.15s linear;
-}
-
-.repeat:hover:before {
-  color: #bbb;
-  transition: all 0.15s linear;
-}
-
-.options:hover:before {
-  color: #bbb;
-  transition: all 0.15s linear;
-}
-
-td > #love:checked ~ label.love:before {
-  content: "\f004";
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #shuffle:checked ~ label.shuffle:before {
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-td > #repeat:checked ~ label.repeat:before {
-  color: #ff564c;
-  transition: all 0.15s linear;
-}
-
-.screen > #magicButton:checked ~ .footer {
-  bottom: -60px;
-  transition: all 0.3s ease-in;
-}
-
-.current {
-  position: absolute;
-  right: 23px;
-  bottom: -60px;
-  transition: all 0.3s ease-in;
-}
-
-.screen > #magicButton:checked ~ .current {
-  bottom: 17px;
-  transition: all 0.3s ease-in;
-}
-
-audio {
-  visibility: hidden;
-}
-    </style>
-</head>
-<body>
-<article class="screen">
-  <input type="checkbox" value="None" id="magicButton" name="check" />
-  <label class="main" for="magicButton"></label>
-
-  <div class="search"></div>
-  <div class="bodyPlayer"></div>
-
-  <table class="list" id="recentPlayingList">
-   
-				</table>
-				
-				<div class="shadow"></div>
-				
-				
-				<div class="info">
-					<h4 id="currentPlaying2"></h4>
-				</div>
-<audio preload="auto" src="{{ radio.radio_link }};" id="audio" controls>
-  <source src="">
-  	</audio>
-				<table class="player">
-					<td><input type="checkbox" id="play" title="Play" onclick="togglePlayPause()"/><label class="play" for="play"></label></td>
-				</table>
-				
-		
-				<div class="current"><h2 id="currentPlaying"></h2></div>
-				
-			
-		</article>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
 
-var audio = document.getElementById('audio');
-var playpause = document.getElementById("play");
-
-function togglePlayPause() {
-   if (audio.paused || audio.ended) {
-      playpause.title = "Pause";
-      audio.play();
-   } else {
-      playpause.title = "Play";
+  var audio = document.getElementById('audio');
+  var playbtn = document.getElementById("playbtn");
+  var playbtn1 = document.getElementById("playbtn1");
+  var playbtns = document.querySelectorAll(".playButtons");
+  playbtn.addEventListener('click', () => {
+    if (audio.paused || audio.ended) {
+      for (var i = 0; i < playbtns.length; i ++){
+        playbtns[i].src = "/static/frontend/assets/pause.svg";
+      }
+      
+      
+      audio.play()
+    }
+    else {
+      for (var i = 0; i < playbtns.length; i ++){
+        playbtns[i].src = "/static/frontend/assets/play.svg";
+      }
       audio.pause();
-   }
-}
-    radio_id = '{{ radio.id }}'
-    function getCurrentName() {
-      fetch(`/api/currentPlaying/${radio_id}`)
-      .then(response => response.json())
-      .then(data => {
-        document.querySelector("#currentPlaying").innerHTML = data['playing']
-        document.querySelector("#currentPlaying2").innerHTML = data['playing']
-   
-      })
-    
     }
-
-    function getRecentPlaying() {
-      fetch(`/api/recentPlaying/${radio_id}`)
-      .then(response => response.json())
-      .then(data => {
-        recList = document.querySelector("#recentPlayingList")
-        for (var i = 0; i < data['history'].length; i ++ ) {
-          recList.innerHTML += `
-          <tr class="song">
-						<td class="nr"><h5>${i}<h5></td>
-						<td class="title"><h6>${data['history'][i]['name']}<h6></td>
-					</tr>
-          `
-        }
-      })
+  })
+  playbtn1.addEventListener('click', () => {
+    if (audio.paused || audio.ended) {
+      for (var i = 0; i < playbtns.length; i ++){
+        playbtns[i].src = "/static/frontend/assets/pause.svg";
+      }
+      audio.play()
     }
-    getRecentPlaying()
-    getCurrentName()
-    setInterval(function(){
+    else {
+      for (var i = 0; i < playbtns.length; i ++){
+        playbtns[i].src = "/static/frontend/assets/play.svg";
+      }
+      audio.pause();
+    }
+  })
+  
+      radio_id = '{{ radio.id }}'
+      function getCurrentName() {
+        fetch(`/api/currentPlaying/${radio_id}`)
+        .then(response => response.json())
+        .then(data => {
+          document.querySelector("#currentPlaying").innerHTML = data['playing']
+         
+        })
+      
+      }
+  
+      function getRecentPlaying() {
+        fetch(`/api/recentPlaying/${radio_id}`)
+        .then(response => response.json())
+        .then(data => {
+          recList = document.querySelector("#recentPlayingList")
+          for (var i = 0; i < data['history'].length; i ++ ) {
+            if (data['history'][i]['img_link'] != "" && data['history'][i]['img_link'] != null) {
+              im = `<img src='${data['history'][i]['img_link']}'>`
+            }
+            else {
+              im = ""
+            }
+            recList.innerHTML += `
+            <a href="#" class="row col-gap-1  align-center">
+                    <span class="color-gray side_bar_number col-2"> ${i}</span>
+                    <div class="side_bar_logo_img img_container background-gray">
+                      ${im}
+                    </div>
+                    <div >
+                        <span class="lead"><strong>${data['history'][i]['name']}</strong></span><br><br>
+                    </div>
+                    <div class=" side_bar_dots ml-auto  row ">
+                            <span class="side_bar_dot background-gray"></span>
+                            <span class="side_bar_dot background-gray"></span>
+                    </div>
+                    
+            </a>
+            
+            `
+          }
+        })
+      }
+      getRecentPlaying()
       getCurrentName()
-    }, 10000);
-    </script>
-    
-</body>
-</html>
+      setInterval(function(){
+        getCurrentName()
+      }, 10000);
+      </script>
+{% endblock %}

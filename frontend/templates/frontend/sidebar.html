@@ -1,0 +1,35 @@
+{% load static %}
+
+<div class="col-3 p-1 sidebar ">
+    <span  onclick="closeSidebar()" class="times showontablet" ><strong>X</strong></span>
+    <ul class="">
+        <li class="row  align-center mb-halfrem nobefore"><img src="" alt="">
+            <a href="{% url 'index' %}"><h4 class=" color-pink">Radio.LIVE</h4></a>
+        </li>
+        <li class="text-uppercase  nobefore">
+            <strong>Menu</strong>
+        </li>
+        <li class="active"><img src="{% static 'frontend/assets/discover.svg' %}" alt=""><span class="ml-1">Discover</span></li>
+        <li class=""><img src="{% static 'frontend/assets/explorer.svg' %}" alt=""><span class="ml-1">Explorer</span></li>
+        <li class="mb-1"><img src="{% static 'frontend/assets/explorer.svg' %}" alt=""><span class="ml-1">Search</span></li>
+        <li class="text-uppercase  nobefore">
+            <strong>Library</strong>
+        </li>
+        <li class=""><img src="{% static 'frontend/assets/mymusic.svg' %}" alt=""><span class="ml-1">My Music</span></li>
+        <li class=""><img src="{% static 'frontend/assets/albums.svg' %}" alt=""><span class="ml-1">Albums</span></li>
+        <li class="mb-1"><img src="{% static 'frontend/assets/artists.svg' %]" alt=""><span class="ml-1">Artists</span></li>
+        <li class="text-uppercase  nobefore">
+            <strong>Playlist</strong>
+        </li>
+        <li class=""><img src="{% static 'frontend/assets/cover.svg' %}" alt=""><span class="ml-1">Cover</span></li>
+        <li class=""><img src="{% static 'frontend/assets/favourites.svg' %}" alt=""><span class="ml-1">Favourites</span></li>
+        <li class=""><img src="{% static 'frontend/assets/shared.svg' %}" alt=""><span class="ml-1">Shared</span></li>
+        <li class="mb-1"><img src="{% static 'frontend/assets/download.svg' %}" alt=""><span class="ml-1">Downloads</span></li>
+        <li class="text-uppercase  nobefore">
+            <strong>Playlist</strong>
+        </li>
+        <li class=""><img src="{% static 'frontend/assets/setting.svg' %}" alt=""><span class="ml-1">Settings</span></li>
+        <li class=""><img src="{% static 'frontend/assets/logout.svg' %}" alt=""><span class="ml-1">Logout</span></li>
+
+    </ul>
+</div>

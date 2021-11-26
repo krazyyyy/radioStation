@@ -27,4 +27,5 @@ class RadioHistory(models.Model):
 
 class RadioSession(models.Model):
     name = models.CharField(max_length=200)
+    img_link = models.CharField(max_length=200, null=True, blank=True)
     history = models.ForeignKey('RadioHistory', related_name="radio_history_session", on_delete=models.CASCADE)
