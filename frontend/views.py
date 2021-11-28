@@ -16,3 +16,9 @@ def radioPage(requests, pk):
     return render(requests, 'frontend/radio.html', {
         "radio" : radio
     })
+
+def radioPlayerPage(requests, pk):
+    radio = RadioList.objects.get(id=pk)
+    return render(requests, 'frontend/radioPlayer.html', {
+        "radio" : radio
+    })

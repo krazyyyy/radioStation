@@ -819,7 +819,7 @@ header{
 
 .country span::before{
 
-  content: '';
+  content: url('https://flagcdn.com/32x24/hr.png');
   position: absolute;
   width: 42px;
   height: 42px;

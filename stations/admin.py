@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import RadioList, Countries, Category, Genre
+from .models import RadioList, Countries, Category, Genre, RssFeed
 # Register your models here.
 
 class InLineCategory(admin.StackedInline):
@@ -23,3 +23,4 @@ class CountriesAdmin(admin.ModelAdmin):
     search_fields = ("country_name",)
 
 admin.site.register(Countries, CountriesAdmin)
+admin.site.register(RssFeed)

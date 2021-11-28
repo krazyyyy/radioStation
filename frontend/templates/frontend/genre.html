@@ -56,7 +56,7 @@
                         <h2 class="color-pink text-uppercase mb-1">{{ main }}</h2>
                         <span>Slijedeći ></span>
                     </div>
-                    <div id="radio-list" class="radio_cards row wrap">
+                    <div id="radio-list" class="radio_cards row justify-between wrap">
                         
                     </div>
                 </div>
@@ -101,7 +101,7 @@
          fetch('/api/getRandomRadio')
         .then(response => response.json())
         .then(data => {
-            audio.src =`${data['link']};`
+            audio.src =`${data['link']}`
             document.querySelector("#stationID").value = data['radio_id']
             document.querySelector("#stationName").innerHTML = data['radio_name']
         })

@@ -65,7 +65,7 @@
                         <h2 class="color-pink text-uppercase mb-1">Popular</h2>
                         <span>Slijedeći ></span>
                     </div>
-                    <div id="radio-list1" class="radio_cards row wrap">
+                    <div id="radio-list1" class="radio_cards row justify-between wrap">
                       
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                             <h2 class=" text-uppercase mb-1">Top Collection</h2>
                             <span>Učitaj sve</span>
                         </div>
-                        <div id="radio-list2" class="row wrap row-gap-1">
+                        <div id="radio-list2" class="row justify-between wrap row-gap-1">
                            
                     
                         </div>
@@ -123,7 +123,7 @@
             radios1 = document.querySelector("#radio-list1")
             radios2 = document.querySelector("#radio-list2")
             for (var i = 0; i < feed.length; i ++) {
-                if ( i < 5) {
+                if ( i < 25) {
                 radios.innerHTML += `<a href="/radio/${feed[i]['id']}" class="radio_card col-2 col-4-tablet col-6-xs">
                             <div class="radio_card_img img_container background-gray">
                                 <img src=${feed[i]['img']}>
@@ -133,7 +133,7 @@
                             </div>
                                 </a>`
                 }
-                else if ( i > 5 && i < 11 ) {
+                else if ( i > 25 && i < 50 ) {
                 radios1.innerHTML += `<a href="/radio/${feed[i]['id']}" class="radio_card col-2 col-4-tablet col-6-xs">
                             <div class="radio_card_img img_container background-gray">
                                 <img src=${feed[i]['img']}>
@@ -192,7 +192,7 @@
          fetch('/api/getRandomRadio')
         .then(response => response.json())
         .then(data => {
-            audio.src =`${data['link']};`
+            audio.src =`${data['link']}`
             document.querySelector("#stationID").value = data['radio_id']
             document.querySelector("#stationName").innerHTML = data['radio_name']
         })

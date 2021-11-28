@@ -19,6 +19,7 @@
                 </div>
                 <div class="play">
                     <img id="playbtn" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="">
+                    <a id="anchorbtn" href="{% url 'radioPlayerPage' radio.id %}" style="display: none;"></a>
                 </div>
                 <div class="next">
                     <img src="{% static 'frontend/assets/nextPlay.svg' %}" alt="">
@@ -26,10 +27,10 @@
 
             </div>
             <div class="player_progress wid-100 ml-2 mr-2">
-                <span class="artist_name" id="currentPlaying"></span>
-                <span class="player_progressbar"></span>
-                <span class="radio_title">{{ radio.radio_name }}</span>
-                <audio id="audio" src="{{ radio.radio_link }};" style="display: none;"></audio>
+              <span class="radio_title">{{ radio.radio_name }}</span>
+              <span class="player_progressbar"></span>
+              <span class="artist_name" id="currentPlaying"></span>
+                <audio id="audio" src="{{ radio.play_link }}" style="display: none;"></audio>
             </div>
             <div class="playerextraactions row align-center col-gap-1">
 
@@ -61,7 +62,7 @@
               <div class="col-8 col-12-mob mt-2 mb-2">
                   
                   <h2 class="mb-1 radio-name row align-center col-gap-halfrem"><span><img id="playbtn1" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="Play/Pause"></span> {{ radio.radio_name }}</h2>
-                  
+                  <a id="anchorbtn1" href="{% url 'radioPlayerPage' radio.id %}" style="display: none;"></a>
                 <div class="row align-center col-gap-halfrem">
                     <img src="{% static 'frontend/assets/heart.svg' %}" alt="">
                     <span class="lead cursor-pointer"><strong>Add to Favourites</strong></span>
@@ -69,41 +70,9 @@
                 </div>
           </div>
         </div>
-        <div class="background-white p-1  b-rad-18 row justify-between">
-           <div class="col-2 col-4-mob b-rad-18 background-gray">
-
-           </div>
-           <div class="col-10 col-8-mob">
-                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
-                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
-           </div>
-        </div>
-        <div class="background-white p-1  b-rad-18 row justify-between">
-           <div class="col-2 col-4-mob b-rad-18 background-gray">
-
-           </div>
-           <div class="col-10 col-8-mob">
-                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
-                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
-           </div>
-        </div>
-        <div class="background-white p-1  b-rad-18 row justify-between">
-           <div class="col-2 col-4-mob b-rad-18 background-gray">
-
-           </div>
-           <div class="col-10 col-8-mob">
-                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
-                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
-           </div>
-        </div>
-        <div class="background-white p-1  b-rad-18 row justify-between">
-           <div class="col-2 col-4-mob b-rad-18 background-gray">
-
-           </div>
-           <div class="col-10 col-8-mob">
-                  <h4 class="mb-1 mt-1">Latest News from the same stations</h4>
-                  <p class="mb-1">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias, eaque asperiores. Eaque nulla explicabo distinctio illum accusantium possimus quisquam architecto! Dignissimos reprehenderit facere magni accusantium voluptatum repudiandae earum fugiat ipsum.</p>
-           </div>
+        <div id="news-feed">
+    
+    
         </div>
       
 
@@ -136,14 +105,14 @@
         playbtns[i].src = "/static/frontend/assets/pause.svg";
       }
       
-      
-      audio.play()
-    }
+       window.open(document.querySelector("#anchorbtn").href,'newwindow','width=580,height=600');
+       
+      }
     else {
       for (var i = 0; i < playbtns.length; i ++){
         playbtns[i].src = "/static/frontend/assets/play.svg";
       }
-      audio.pause();
+      
     }
   })
   playbtn1.addEventListener('click', () => {
@@ -151,17 +120,40 @@
       for (var i = 0; i < playbtns.length; i ++){
         playbtns[i].src = "/static/frontend/assets/pause.svg";
       }
-      audio.play()
+         window.open(document.querySelector("#anchorbtn").href,'newwindow','width=530,height=600');
     }
     else {
       for (var i = 0; i < playbtns.length; i ++){
         playbtns[i].src = "/static/frontend/assets/play.svg";
       }
-      audio.pause();
+  
     }
   })
   
       radio_id = '{{ radio.id }}'
+      rss_name = '{{ radio.radio_name }}'
+      rss_feed = '{{ radio.rss_feed }}'
+      if (rss_feed != "" || rss_feed != null) {
+        fetch(`/api/renderNews/${rss_name}`)
+        .then(response => response.json())
+        .then(data => {
+          feed = data['feed']
+          news = document.querySelector("#news-feed")
+          for (var i = 0; i < feed.length; i++) {
+            news.innerHTML += `
+            <div class="background-white p-1  b-rad-18 row justify-between">
+      
+            <div class="col-10 col-8-mob">
+                    <a href="${feed[i]['link']}" rel="nofollow" target="blank"><h4 class="mb-1 mt-1">${feed[i]['title']}</h4></a>
+                    <a href="${feed[i]['link']}" rel="nofollow" target="blank"><p class="mb-1">${feed[i]['description']}</p></a>
+            </div>
+          </div>
+            `
+          }
+          console.log(data)
+        })
+    }
+
       function getCurrentName() {
         fetch(`/api/currentPlaying/${radio_id}`)
         .then(response => response.json())

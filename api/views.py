@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.forms import model_to_dict
 import requests
+from bs4 import BeautifulSoup
 
-
-from stations.models import RadioList, RadioHistory, RadioSession, Category
+from stations.models import RadioList, RadioHistory, RadioSession, Category, Countries, RssFeed
 # Create your views here.
 
 def getRadios(request):
@@ -26,9 +26,13 @@ def getCurrentPlaying(request, pk):
     cur = r.content.decode()
 
     try:
-        cur_req = f"https://theaudiodb.com/api/v1/json/523532/search.php?s={cur}"
+        imgg = cur.split("-")
+        
+        cur_req = f"https://theaudiodb.com/api/v1/json/523532/search.php?s={imgg[0][0:-1]}"
+
         im = requests.get(cur_req)
        
+
         cur_img = im.json()['artists'][0]['strArtistThumb']
     except:
         cur_img = ""
@@ -74,7 +78,7 @@ def getRecents(request):
     if history.exists():
         # radio_history = history[0]
         for h in history:
-            for i in h.radio_history_session.all()[:1]:
+            for i in h.radio_history_session.all().order_by("-id")[:1]:
                
                 n = model_to_dict(i)
                 li.append(n)
@@ -84,7 +88,7 @@ def getRecents(request):
 
 def getRandomRadio(request):
     radio = RadioList.objects.order_by('?')[0]
-    rad = dict(radio_id=radio.id, radio_name=radio.radio_name, link=radio.radio_link)
+    rad = dict(radio_id=radio.id, radio_name=radio.radio_name, link=radio.play_link)
     return JsonResponse(rad)
 
 def getByCategory(request, pk):
@@ -98,3 +102,57 @@ def getByCategory(request, pk):
         li.append(n)
     radio = dict(feed=li)
     return JsonResponse(radio)
+
+def getCountries(request):
+    countries = Countries.objects.all()
+    li = []
+    for country in countries:
+        n = model_to_dict(country)
+        li.append(n)
+    data = dict(countries=li)
+    return JsonResponse(data)
+
+def getNews(request):
+    feeds = RadioList.objects.all()
+    li = []
+    insert_list = []
+    
+    links_list = []
+    for feed in feeds:
+        if not feed.rss_feed:
+            continue
+        url = requests.get(feed.rss_feed)
+        soup = BeautifulSoup(url.content, 'xml')
+        entries = soup.find_all('item')
+        for i in entries:
+            try:
+                data = dict()
+                chk = RssFeed.objects.filter(link__iexact=i.link.text)
+                
+                pub_ = i.pubDate.text.replace("+0000", "")
+                try:
+                    des = i.description.text
+                except:
+                    des = ""
+                if not chk.exists() and i.link.text not in links_list:
+                    links_list.append(i.link.text)
+                    insert_list.append(RssFeed(title=i.title.text, link=i.link.text, source=feed.radio_name, pub_date=pub_, description=des))
+                data['title'] = i.title.text
+                data['link'] = i.link.text
+  
+                
+                li.append(data)
+            except:
+                pass
+    RssFeed.objects.bulk_create(insert_list)
+    # feed = dict(feed=li)
+    return JsonResponse({"message" : "success"})
+
+def renderNews(request, pk):
+    news = RssFeed.objects.filter(source=pk).order_by('-id')[:3]
+    li = []
+    for i in news:
+        n = model_to_dict(i)
+        li.append(n)
+    feed = dict(feed=li)
+    return JsonResponse(feed)
