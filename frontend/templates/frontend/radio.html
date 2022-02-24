@@ -5,7 +5,14 @@
 {% block title %} {{ radio.radio_name }}{% endblock %}
 
 {% block body %}
-<div class="row ">
+<style>
+  .hr_ds {
+    cursor: pointer;
+    height: 30px;
+  }
+</style>
+
+<div class="row allPage">
   {% include 'frontend/sidebar.html' %}
   <div class="wid-100 background-light pl-1 pr-1  ">
   {% include 'frontend/header.html' %}
@@ -13,63 +20,69 @@
     <div class="row wid-100 dir-col row-gap-2 ">
         <div class="player row align-center justify-between dir-col-onxs row-gap-3">
             <div class="playermainactions row align-center col-gap-1">
-                <div class="prev">
-                    <img src="{% static 'frontend/assets/prevPlay.svg' %}" alt="">
-
-                </div>
+                
                 <div class="play">
-                    <img id="playbtn" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="">
-                    <a id="anchorbtn" href="{% url 'radioPlayerPage' radio.id %}" style="display: none;"></a>
+                    <img id="modalbtn" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="">
+                    <!-- <img id="playbtn" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt=""> -->
+                    <a id="anchorbtn" href="{% url 'radioPlayerPage' radio.id 'slusajradio' %}" style="display: none;"></a>
                 </div>
                 <div class="next">
-                    <img src="{% static 'frontend/assets/nextPlay.svg' %}" alt="">
-                </div>
+                  <img class="vol_btns" src="{% static 'frontend/assets/mute.svg' %}" alt="">
+              </div>
 
             </div>
             <div class="player_progress wid-100 ml-2 mr-2">
-              <span class="radio_title">{{ radio.radio_name }}</span>
-              <span class="player_progressbar"></span>
               <span class="artist_name" id="currentPlaying"></span>
+              <input id="volume" type="range" min="0" max="100" step="1" value="50" />
+              <span class="radio_title color-pink">{{ radio.radio_name }}</span>
                 <audio id="audio" src="{{ radio.play_link }}" style="display: none;"></audio>
             </div>
             <div class="playerextraactions row align-center col-gap-1">
+              <img class="vol_btns" src="{% static 'frontend/assets/vol_high.svg' %}" alt="" >
+              <img class="vol_btns" id="openRadio" src="{% static 'frontend/assets/external.svg' %}" alt=""  style="cursor: pointer;">
 
-                <div class="addtofavIcon">
-                    <img src="./assets/music.svg" alt="">
-                    <img class="plusicon" src="./assets/plus.svg" alt="">
-                </div>
-                <div class="repeat-player">
-                    <img class="repeat-player1" src="./assets/autoplay1.svg" alt="">
-                    <span>
-                        1
-                    </span>
-                    <img class="repeat-player2" src="./assets/autoplay2.svg" alt="">
 
-                </div>
-                <div class="row align-center">
-                    <img src="{% static 'frontend/assets/deck.svg' %}" alt="">
-                    <img src="{% static 'fro/assets/volume.svg' %}" alt="">
-                </div>
-            </div>
+          </div>
         </div>
         <div class="background-white p-1  b-rad-18">
           <div class="row justify-between wrap ">
               <div class="col-4 col-6-mob background-gray b-rad-18 radio_img mlr-auto" >
                 {% if radio.radio_img %}
-                  <img style="width: 348px;" src="{{ radio.radio_img.url }}" alt="{{ radio.radio_name }}">
+                  <img style="width: 100%; height : 100%;" src="{{ radio.radio_img.url }}" alt="{{ radio.radio_name }}">
                 {% endif %}
               </div>
               <div class="col-8 col-12-mob mt-2 mb-2">
                   
-                  <h2 class="mb-1 radio-name row align-center col-gap-halfrem"><span><img id="playbtn1" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="Play/Pause"></span> {{ radio.radio_name }}</h2>
-                  <a id="anchorbtn1" href="{% url 'radioPlayerPage' radio.id %}" style="display: none;"></a>
+                  <h2 class="mb-1 radio-name row align-center col-gap-halfrem"><span>
+                    <img id="modalbtn1" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="Play/Pause">
+                    <!-- <img id="playbtn1" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="Play/Pause"> -->
+                  </span> {{ radio.radio_name }}</h2>
+                  <a id="anchorbtn1" href="{% url 'radioPlayerPage' radio.id 'slusajradio' %}" style="display: none;"></a>
                 <div class="row align-center col-gap-halfrem">
-                    <img src="{% static 'frontend/assets/heart.svg' %}" alt="">
-                    <span class="lead cursor-pointer"><strong>Add to Favourites</strong></span>
+                  {% if fav %}
+                    <img onclick="removeFav()" id="favHeart" class="hr_ds" src="{% static 'frontend/assets/heart_red.svg' %}" alt="">
+                    <span onclick="removeFav()" id="favText" class="lead cursor-pointer"><strong>Remove from Favourites</strong></span>
+                    {% else %}
+                    <img onclick="addFav()" id="favHeart" class="hr_ds" src="{% static 'frontend/assets/heart.svg' %}" alt="">
+                    <span onclick="addFav()" id="favText" class="lead cursor-pointer"><strong>Add to Favourites</strong></span>
+                  {% endif %}
                 </div>
                 </div>
           </div>
         </div>
+        {% if options.radio_ad %}
+          <div>
+            {{ options.radio_ad | safe }}
+          </div>
+        {% endif %}
+        <div class="background-white p-1  b-rad-18">
+          
+          <div id="radio-list" class="radio_cards row justify-between wrap">
+              
+          </div>
+        
+      </div>
+      <h3 style="margin-left: 3px;">{{ radio.radio_name }} - ZADNJE VIJESTI</h3>
         <div id="news-feed">
     
     
@@ -79,7 +92,13 @@
     </div>
     <div class="col-3  background-white mt-2 ml-2 p-1 play-history">
         <span onclick="closePlayHistory()" class="times showontablet"><strong>X</strong></span>
-        <h2>Play history</h2>
+        <h2>Novosti</h2>
+        {% if options.newsSideAD %}
+        <div>
+          {{ options.newsSideAD | safe }}
+        </div>
+        {% endif %}
+
         <div id="recentPlayingList" class="row dir-col row-gap-1 mt-2">
       
             
@@ -91,13 +110,149 @@
 
   </div>
 </div>
+<div id="radio-modal" class="ebcf_modal">
 
+  <div class="ebcf_modal-content">
+    <span class="ebcf_close">&times;</span>
+    <div id="modal-content">
+
+    </div>
+  </div>
+
+</div>
 
 <script type="text/javascript">
 
-  var audio = document.getElementById('audio');
+    
+
+    vol = document.querySelector("#volume")
+    var audio = document.getElementById('audio');
+    vol.addEventListener('change', () => {
+      audio.volume = vol.value / 100
+    })
+     // Get the modal
+    var ebModal = document.getElementById('radio-modal');
+
+    // Get the button that opens the modal
+    var ebBtn = document.getElementById("modalbtn");
+    var ebBtn1 = document.getElementById("modalbtn1");
+
+    // Get the <span> element that closes the modal
+    var ebSpan = document.getElementsByClassName("ebcf_close")[0];
+
+    // When the user clicks the button, open the modal 
+    ebBtn.onclick = function() {
+      playbtn1 = document.getElementById("playbtn1");
+        if (playbtn1 ==  null) { 
+            ebModal.style.display = "block";
+        }
+    }
+    ebBtn1.onclick = function() {
+      playbtn1 = document.getElementById("playbtn1");
+        if (playbtn1 ==  null) { 
+            ebModal.style.display = "block";
+        }
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    ebSpan.onclick = function() {
+        ebModal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == ebModal) {
+            ebModal.style.display = "none";
+        }
+    }
+    cont_id = '{{ radio.country.id }}'
+    fetch(`/api/getRandomRadios/${cont_id}`)
+        .then(response => response.json())
+        .then(data => {
+            feed = data['feed']
+            radios = document.querySelector("#radio-list")
+  
+            for (var i = 0; i < feed.length; i ++) {
+                
+                radios.innerHTML += `<a href="/radio/${feed[i]['id']}/${feed[i]['radio_name'].replaceAll(" ", "-")}" class="radio_card col-2 col-4-tablet col-6-xs">
+                            <div class="radio_card_img img_container background-gray">
+                                <img src=${feed[i]['img']}>
+                            </div>
+                            <div class="radio_card_detail mt-halfrem text-center">
+                                <span class="lead "><strong>${feed[i]['radio_name']} </strong></span>
+                            </div>
+                                </a>`
+                }
+              })
+  play_link = '{{ radio.play_link }}'
+  play_split = play_link.split("/")
+  md_cnt = document.querySelector("#modal-content") 
+  radio_id = '{{ radio.id }}'
+  function addFav() {
+      fetch(`/api/addFavourite/${radio_id}`)
+      document.querySelector("#favHeart").removeAttribute("onclick")
+      document.querySelector("#favText").removeAttribute("onclick")
+      document.querySelector("#favText").innerHTML = "Remove from Favourites"
+      document.querySelector("#favHeart").src = "/static/frontend/assets/heart_red.svg"
+      document.querySelector("#favHeart").setAttribute("onclick", "removeFav()")
+      document.querySelector("#favText").setAttribute("onclick", "removeFav()")
+  }
+  function removeFav() {
+      fetch(`/api/removeFavourite/${radio_id}`)
+      document.querySelector("#favHeart").removeAttribute("onclick")
+      document.querySelector("#favText").removeAttribute("onclick")
+      document.querySelector("#favText").innerHTML = "Add to Favourites"
+      document.querySelector("#favHeart").src = "/static/frontend/assets/heart.svg"
+      document.querySelector("#favHeart").setAttribute("onclick", "addFav()")
+      document.querySelector("#favText").setAttribute("onclick", "addFav()")
+    }
+  tit = '{{  radio.radio_name }}'
+  title = tit.replaceAll(" ", "-")
+  if (play_split[0] == "http:") {
+      document.querySelector("#anchorbtn").href = `http://slusajradio.live/radioplayer/${radio_id}/${title}` 
+      md_cnt.innerHTML = `
+            <div class="content_item">
+            <p class="mr-50">
+                Zbog ograničenja internet preglednika radio stream je moguće slušati samo u novom pop-up prozoru
+                </p>
+            <p style="MARGIN: 0 50px;
+    font-size: 12px;">
+                Due to restrictions of your browser, it is not possible to directly play this station on our website.
+           
+            You can however play the station here in our slusajradio.live Popup-Player.</p>
+            </div>
+            <div class="content_buttons">
+                <button class="btnContent" id="playbtn"> Otvori Popup</button>  
+                </div>
+                
+            `
+            }
+            else {
+                document.querySelector("#anchorbtn").href = `https://slusajradio.live/radioplayer/${radio_id}/${title}` 
+                ebBtn.removeAttribute("id")
+                ebBtn.id = "playbtn1";
+                ebBtn1.id = "playbtn2";
+                md_cnt.innerHTML = `
+                <div class="content_item">
+                <p class="mr-50">
+                    Zbog ograničenja internet preglednika radio stream je moguće slušati samo u novom pop-up prozoru
+                    </p>
+                <p style="MARGIN: 0 50px;
+        font-size: 12px;">
+                    Due to restrictions of your browser, it is not possible to directly play this station on our website.
+            
+                You can however play the station here in our slusajradio.live Popup-Player.</p>
+                </div>
+                <div class="content_buttons">
+                    <button class="btnContent" id="playbtn"> Otvori Popup</button>  
+                    </div>
+                `
+
+            }
+ 
   var playbtn = document.getElementById("playbtn");
   var playbtn1 = document.getElementById("playbtn1");
+  var playbtn2 = document.getElementById("playbtn2");
   var playbtns = document.querySelectorAll(".playButtons");
   playbtn.addEventListener('click', () => {
     if (audio.paused || audio.ended) {
@@ -105,7 +260,7 @@
         playbtns[i].src = "/static/frontend/assets/pause.svg";
       }
       
-       window.open(document.querySelector("#anchorbtn").href,'newwindow','width=580,height=600');
+       window.open(document.querySelector("#anchorbtn").href,'newwindow','width=350,height=900');
        
       }
     else {
@@ -115,26 +270,48 @@
       
     }
   })
+  if (playbtn1 != null) {
   playbtn1.addEventListener('click', () => {
     if (audio.paused || audio.ended) {
       for (var i = 0; i < playbtns.length; i ++){
         playbtns[i].src = "/static/frontend/assets/pause.svg";
       }
-         window.open(document.querySelector("#anchorbtn").href,'newwindow','width=530,height=600');
+      audio.play()
+      playbtn1.innerHTML = "Stop"
     }
     else {
       for (var i = 0; i < playbtns.length; i ++){
         playbtns[i].src = "/static/frontend/assets/play.svg";
       }
-  
+      audio.pause()
+      playbtn1.innerHTML = "Play Here"
     }
   })
-  
+  }
+  if (playbtn2 != null) {
+  playbtn2.addEventListener('click', () => {
+    if (audio.paused || audio.ended) {
+      for (var i = 0; i < playbtns.length; i ++){
+        playbtns[i].src = "/static/frontend/assets/pause.svg";
+      }
+      audio.play()
+      playbtn1.innerHTML = "Stop"
+    }
+    else {
+      for (var i = 0; i < playbtns.length; i ++){
+        playbtns[i].src = "/static/frontend/assets/play.svg";
+      }
+      audio.pause()
+      playbtn1.innerHTML = "Play Here"
+    }
+  })
+  }
       radio_id = '{{ radio.id }}'
       rss_name = '{{ radio.radio_name }}'
       rss_feed = '{{ radio.rss_feed }}'
+      countryID = '{{ country.id }}'
       if (rss_feed != "" || rss_feed != null) {
-        fetch(`/api/renderNews/${rss_name}`)
+        fetch(`/api/renderNews/${radio_id}`)
         .then(response => response.json())
         .then(data => {
           feed = data['feed']
@@ -143,14 +320,17 @@
             news.innerHTML += `
             <div class="background-white p-1  b-rad-18 row justify-between">
       
-            <div class="col-10 col-8-mob">
-                    <a href="${feed[i]['link']}" rel="nofollow" target="blank"><h4 class="mb-1 mt-1">${feed[i]['title']}</h4></a>
-                    <a href="${feed[i]['link']}" rel="nofollow" target="blank"><p class="mb-1">${feed[i]['description']}</p></a>
+            <div>
+                    <h4 class="mb-1 mt-1">${feed[i]['title']}</h4>
+                    <p class="mb-1">${feed[i]['description']}</p>
             </div>
-          </div>
-            `
+            </div>
+            <div style="margin-bottom:5px;" class="background-white p-1 row justify-between">
+              <a href="/news/${data['feed'][i]['id']}/${data['feed'][i]['title'].replaceAll(" ", "-")}/${countryID}" target="blank"><h5>Pročitaj više</h5></a>
+            </div>
+             `
           }
-          console.log(data)
+
         })
     }
 
@@ -163,6 +343,32 @@
         })
       
       }
+      country = '{{ country.id }}'
+      fetch(`/api/renderRadioNews/${country}`)
+        .then(response => response.json())
+        .then(data => {
+            recList = document.querySelector("#recentPlayingList")
+          for (var i = 0; i < data['feed'].length; i ++ ) {
+            
+            recList.innerHTML += `
+            <a href="#" id="no_img" class="row col-gap-1  align-center" style="flex-wrap: wrap;">
+                 
+                    <div >
+                        <span class="lead"><strong>${data['feed'][i]['title']}</strong></span><br><br>
+                    </div>
+                
+                    <div style="margin:1px; padding:0;" class="background-white p-1 row justify-between">
+                    <div>
+                        <small>${data['feed'][i]['source']}</small>
+                    </div>
+                    <a href="/news/${data['feed'][i]['id']}/${data['feed'][i]['title'].replaceAll(" ", "-")}/${countryID}"" target="blank"><h5>Pročitaj više</h5></a>
+                    </div>
+                    
+            </a>
+            
+            `
+        }
+        })
   
       function getRecentPlaying() {
         fetch(`/api/recentPlaying/${radio_id}`)
@@ -196,10 +402,18 @@
           }
         })
       }
-      getRecentPlaying()
+   
       getCurrentName()
-      setInterval(function(){
-        getCurrentName()
-      }, 10000);
+      
+    var openRadio = document.getElementById("openRadio");
+        openRadio.addEventListener('click', () => {
+       
+        playbtn.src = "/static/frontend/assets/pause.svg";
+    
+        
+        window.open(document.querySelector("#anchorbtn").href,'newwindow','width=350,height=900');
+        
+      
+    })
       </script>
 {% endblock %}

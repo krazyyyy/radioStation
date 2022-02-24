@@ -1,0 +1,59 @@
+<main class="row justify-between">
+    <div class="row wid-100 dir-col row-gap-2 ">
+        <div class="player row align-center justify-between dir-col-onxs row-gap-3">
+            <div class="playermainactions row flex_between col-12 ">
+                <div class="prev">
+                    <img src="{% static 'frontend/assets/plus2.svg' %}" alt="">
+
+                </div>
+                <div class="prev">
+                    <img src="{% static 'frontend/assets/kite2.svg' %}" alt="">
+
+                </div>
+
+            </div>
+            <div class="playermainactions row align-center col-gap-1">
+                <div class="img_cover">
+                    <img src="" id="imgRadio" class="img_set" alt="">
+                    <audio id="audio" src="{{ radio.play_link }}" style="display: none;"></audio>
+                  </div>
+
+            </div>
+            <div class="player_progress flex_center wid-100 ml-2 mr-2">
+                <span class="artist_name song_name text-center" id="currentPlaying1"></span>
+                <span class="radio_title artist-name text-center" id="currentPlaying2"></span>
+
+            </div>
+            <div class="player_progress wid-100 ml-2 mr-2">
+                <span class="player_progressbar_pink"></span>
+
+            </div>
+            <div class="playermainactions row flex_around col-gap-2">
+                <div class="prev">
+                    <img src="{% static 'frontend/assets/back.svg' %}" alt="">
+
+                </div>
+                <div class="prev">
+                    <img src="{% static 'frontend/assets/prevPlay_pink.svg' %}" alt="">
+
+                </div>
+                <div class="play">
+                    <img id="playbtn" src="{% static 'frontend/assets/play_pink.svg' %}" class="playButtons" alt="">
+                </div>
+                <div class="next">
+                    <img src="{% static 'frontend/assets/nextPlay_pink.svg' %}" alt="">
+                </div>
+                <div class="next">
+                    <img src="{% static 'frontend/assets/loop.svg' %}" alt="">
+                </div>
+
+            </div>
+            
+       
+        </div>
+      
+      
+
+    </div>
+  
+</main>

@@ -3,33 +3,73 @@
 <div class="col-3 p-1 sidebar ">
     <span  onclick="closeSidebar()" class="times showontablet" ><strong>X</strong></span>
     <ul class="">
-        <li class="row  align-center mb-halfrem nobefore"><img src="" alt="">
-            <a href="{% url 'index' %}"><h4 class=" color-pink">Radio.LIVE</h4></a>
+        <li class="row  align-center mb-halfrem nobefore"><img src="{% static 'frontend/assets/fav.png' %}" alt="" style="    width: 43px;
+            object-fit: cover;
+            margin-right: 10px;">
+            
+            <a href="{% url 'index' %}"><h4 class=" color-pink" > slusajradio.live</h4></a>
         </li>
         <li class="text-uppercase  nobefore">
-            <strong>Menu</strong>
+            <strong>IZBORNIK</strong>
         </li>
-        <li class="active"><img src="{% static 'frontend/assets/discover.svg' %}" alt=""><span class="ml-1">Discover</span></li>
-        <li class=""><img src="{% static 'frontend/assets/explorer.svg' %}" alt=""><span class="ml-1">Explorer</span></li>
-        <li class="mb-1"><img src="{% static 'frontend/assets/explorer.svg' %}" alt=""><span class="ml-1">Search</span></li>
+        <li id="home_sidebar"><img src="{% static 'frontend/assets/discover.svg' %}" alt=""><a href="{% url 'index' %}"><span class="ml-1">Naslovna</span></a></li>
+        <li id="popularno" class=""><img src="{% static 'frontend/assets/explorer.svg' %}" alt=""><a href="/popular/{{country.id}}"><span class="ml-1">Sve stanice</span></a></li>
+        <li class="mb-1" id="search_sidebar"><img src="{% static 'frontend/assets/search.svg' %}" alt=""><span class="ml-1" id="search_trazi" >Traži</span></li>
         <li class="text-uppercase  nobefore">
-            <strong>Library</strong>
+            <strong>IZABERI</strong>
         </li>
-        <li class=""><img src="{% static 'frontend/assets/mymusic.svg' %}" alt=""><span class="ml-1">My Music</span></li>
-        <li class=""><img src="{% static 'frontend/assets/albums.svg' %}" alt=""><span class="ml-1">Albums</span></li>
-        <li class="mb-1"><img src="{% static 'frontend/assets/artists.svg' %]" alt=""><span class="ml-1">Artists</span></li>
+        <li id="popularno" class=""><img src="{% static 'frontend/assets/mymusic.svg' %}" alt=""><a href="/popular/{{country.id}}" ><span class="ml-1">Popularno</span></a></li>
+        <li class="" id="novo_side"><img src="{% static 'frontend/assets/albums.svg' %}" alt=""><a href="{% url 'latestPage' %}"><span class="ml-1">Novo</span></a></li>
         <li class="text-uppercase  nobefore">
-            <strong>Playlist</strong>
+            <strong>OPCIJE</strong>
         </li>
-        <li class=""><img src="{% static 'frontend/assets/cover.svg' %}" alt=""><span class="ml-1">Cover</span></li>
-        <li class=""><img src="{% static 'frontend/assets/favourites.svg' %}" alt=""><span class="ml-1">Favourites</span></li>
-        <li class=""><img src="{% static 'frontend/assets/shared.svg' %}" alt=""><span class="ml-1">Shared</span></li>
-        <li class="mb-1"><img src="{% static 'frontend/assets/download.svg' %}" alt=""><span class="ml-1">Downloads</span></li>
+        <li id="favSidebar" class=""><img src="{% static 'frontend/assets/heart.svg' %}" alt=""><a href="{% url 'favouritePage' %}"> <span class="ml-1">Favoriti</span> </a></li>
+        <li class=""><img src="{% static 'frontend/assets/shared.svg' %}" alt=""><a href="#open-modal"> <span class="ml-1">Podijeli</span></a></li>
         <li class="text-uppercase  nobefore">
-            <strong>Playlist</strong>
+           
         </li>
-        <li class=""><img src="{% static 'frontend/assets/setting.svg' %}" alt=""><span class="ml-1">Settings</span></li>
-        <li class=""><img src="{% static 'frontend/assets/logout.svg' %}" alt=""><span class="ml-1">Logout</span></li>
-
     </ul>
+    <div id="leftSidbarAd">
+    {% if options.sidebarAD %}
+        {{ options.sidebarAD | safe }}
+        {% endif %}
+    </div>
 </div>
+
+<div id="search-box">
+    <div class="container_search">
+      <a class="close" href="#close"></a>
+      <div class="search-main">
+        <div class="search-inner">
+        <form action="{% url 'search' %}" method="POST">
+            {% csrf_token %}
+          <input type="text" id="inputSearch" name="keyword" placeholder="search..">
+          <input type="hidden" name="country_id" value="{{ country.id }}">
+        </form>
+          <span class="search-info">Hit enter to search or ESC to close</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    
+    $('#search_trazi').click(function() {
+  event.preventDefault()
+  $("#search-box").addClass("-open");
+  setTimeout(function() {
+    inputSearch.focus();
+  }, 800);
+});
+
+$('a[href="#close"]').click(function() {
+  event.preventDefault()
+  $("#search-box").removeClass("-open");
+});
+
+$(document).keyup(function(e) {
+  if (e.keyCode == 27) { // escape key maps to keycode `27`
+    $("#search-box").removeClass("-open");
+  }
+});
+</script>

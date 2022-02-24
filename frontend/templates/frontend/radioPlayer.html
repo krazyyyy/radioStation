@@ -5,65 +5,302 @@
 {% block title %} {{ radio.radio_name }}{% endblock %}
 
 {% block body %}
-<div class="row ">
+<style>
+  .row {
+      display: flex;
+  }
 
+
+  .wid-100 {
+      width: 100%;
+  }
+
+  .pl-1 {
+      padding-left: 1rem;
+  }
+
+  .img_cover {
+      width: 295px;
+      height: 296px;
+  }
+
+  .img_set {
+      width: 295px;
+      height: 296px;
+      object-fit: contain;
+      object-position: center top;
+      border-radius: 50%;
+  }
+
+  .flex_center {
+      display: flex;
+      justify-content: center;
+  }
+
+  .song_name {
+      color: #1E2022;
+      font-size: 20px;
+  }
+
+  .artist-name {
+      color: #77838F;
+      font-size: 14;
+  }
+
+  .flex_around {
+      justify-content: space-around;
+  }
+
+  .flex_between {
+      justify-content: space-between;
+  }
+
+  .background-light {
+      background-color: #f9f9fb;
+  }
+
+  .pr-1 {
+      padding-right: 1rem;
+  }
+
+  .justify-between {
+      justify-content: space-between;
+  }
+
+  .dir-col {
+      flex-direction: column;
+  }
+
+  .row-gap-2 {
+      row-gap: 2rem;
+  }
+
+  .player {
+      height: auto !important;
+  }
+
+  .align-center {
+      align-items: center;
+  }
+
+  .dir-col-onxs {
+      flex-direction: column;
+  }
+
+  .row-gap-3 {
+      row-gap: 3rem;
+  }
+
+  .player {
+      height: 100px;
+      background-color: #fff;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 18px;
+  }
+
+  .playermainactions .play {
+      width: 45px;
+      height: 45px;
+      margin-top: -11px;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .playermainactions div {
+      cursor: pointer;
+  }
+
+  .col-12 {
+      width: 100%;
+      min-width: 100%;
+  }
+
+  .col-gap-1 {
+      column-gap: 1rem;
+  }
+
+  .player_progressbar::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 60%;
+      height: 2px;
+      background-color: #212121;
+
+  }
+
+  .player_progressbar_pink::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 60%;
+      height: 2px;
+      background-color: #ff2692;
+
+  }
+
+  .player_progress {
+      position: relative;
+  }
+
+  .player_progressbar {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+
+      background-color: #E5E7EF;
+  }
+
+  .ml-2 {
+      margin-left: 2rem;
+  }
+
+  .mr-2 {
+      margin-right: 2rem;
+  }
+
+  .artist_name {
+      position: absolute;
+      top: -26px;
+  }
+
+  .radio_title {
+      position: absolute;
+      top: 10px;
+  }
+
+  .col-gap-2 {
+      column-gap: 2rem;
+  }
+
+  @media (max-width:750px) {
+      header {
+          display: none!important;
+      }
+  }
+
+ 
+#radioImgMain {
+    border-radius: 150px;
+    width: 90px;
+    height: 90px;
+    border: 1px solid #FF2692;
+}
+
+.range {
+  display: inline-block;
+  margin: 36px 20px 20px;
+  width: 240px !important;
+}
+
+#barHistory {
+    display: none;
+}
+
+</style>
+
+<div class="row allPage">
+  {% include 'frontend/sidebar.html' %}
   <div class="wid-100 background-light pl-1 pr-1  ">
-    <div class="row">
-    <div class="col-4 col-6-mob background-gray b-rad-18 radio_img mlr-auto" >
-        {% if radio.radio_img %}
-        <img id="imgRadio" style="width: 348px;" src="{{ radio.radio_img.url }}" alt="{{ radio.radio_name }}">
-        {% endif %}
-    </div>
-</div>
-  <main class="row" style="justify-content: center;">
-    <div class="player row align-center dir-col-onxs row-gap-3">
-        
-        <div class="playermainactions row align-center col-gap-1">
-            <div class="prev">
-                <img src="{% static 'frontend/assets/prevPlay.svg' %}" alt="">
+    {% include 'frontend/header.html' %}
+    <main class="row justify-between">
+      <div class="row wid-100 dir-col row-gap-2 " style="height: 1100px;">
+          <div class="player row align-center justify-between dir-col-onxs row-gap-3">
+              <div class="playermainactions row flex_between col-12 ">
+                  <div class="prev">
+                      <img id="radioImgMain" src="{{ radio.radio_img.url }}" alt="">
 
-            </div>
-            <div class="play">
-                <img id="playbtn" class="playButtons" src="{% static 'frontend/assets/play.svg' %}" alt="">
-                <audio id="audio" src="{{ radio.play_link }}" style="display: none;"></audio>
-           
-            </div>
-            <div class="next">
-                <img src="{% static 'frontend/assets/nextPlay.svg' %}" alt="">
-            </div>
+                  </div>
+                  <div class="prev">
+                      <img src="{% static 'frontend/assets/kite2.svg' %}" alt="">
 
-        </div>
-        <div class="player_progress wid-100 ml-2 mr-2">
-            <span class="radio_title">{{ radio.radio_name }}</span>
-            <span class="player_progressbar"></span>
-            <span class="artist_name" id="currentPlaying"></span>
-            <audio id="audio" src="{{ radio.play_link }}" style="display: none;"></audio>
-        </div>
-        <div class="playerextraactions row align-center col-gap-1">
+                  </div>
 
-            <div class="addtofavIcon">
-                <img src="./assets/music.svg" alt="">
-                <img class="plusicon" src="./assets/plus.svg" alt="">
-            </div>
-            <div class="repeat-player">
-                <img class="repeat-player1" src="./assets/autoplay1.svg" alt="">
-                <span>
-                    1
-                </span>
-                <img class="repeat-player2" src="./assets/autoplay2.svg" alt="">
+              </div>
+              <div class="playermainactions row align-center col-gap-1' %}">
+                  <div class="img_cover">
+                      <img src="https://i.pinimg.com/originals/5c/4a/1c/5c4a1cef8a1ebd3584fac99c817b173c.gif" id="imgRadio" class="img_set" alt="">
+                      <audio  autoplay="true"  id="audio" src="{{ radio.play_link }}" style="display: none;" ></audio>
+                  
+                  </div>
 
-            </div>
-            <div class="row align-center">
-                <img src="{% static 'frontend/assets/deck.svg' %}" alt="">
-                <img src="{% static 'fro/assets/volume.svg' %}" alt="">
-            </div>
-        </div>
-    </div>
+              </div>
+              <div class="player_progress flex_center wid-100 ml-2 mr-2">
+                  <span class="radio_name song_name text-center">{{ radio.radio_name }} </span>
+                  <span class="artist_name song_name text-center" id="currentPlaying1"></span>
+                  <span class="radio_title artist-name text-center" id="currentPlaying2"></span>
+
+              </div>
+              <div class="player_progress flex_center wid-100 ml-2 mr-2">
+                  <div class="mute">
+                    <img id="mute_img" src="{% static 'frontend/assets/mute.svg' %}" alt="">
+                 </div>
+                 <input type="range" max="100" value="50">
+                 <!-- <span class="player_progressbar_pink"></span> -->
+                 <div class="high_vol">
+                   <img id="vol_high" src="{% static 'frontend/assets/vol_high.svg' %}" alt="">
+                </div>
+                 
+                </div>
+              <div class="playermainactions row flex_around col-gap-2">
+                  <div class="prev">
+                      <img src="{% static 'frontend/assets/back.svg' %}" alt="">
+
+                  </div>
+                  <div class="prev">
+                      <img src="{% static 'frontend/assets/prevPlay_pink.svg' %}" alt="">
+
+                  </div>
+                  <div class="play">
+                      <img id="playbtn" class="playButtons" src="{% static 'frontend/assets/play_pink.svg' %}" alt="">
+                  </div>
+                  <div class="next">
+                      <img src="{% static 'frontend/assets//nextPlay_pink.svg' %}" alt="">
+                  </div>
+                  <div class="next">
+                      <img src="{% static 'frontend/assets//loop.svg' %}" alt="">
+                  </div>
+              </div>
+          </div>
+
+          {% if options.radioPlayerAD %}
+          <div>
+            {{ options.radioPlayerAD | safe }}
+          </div>
+          {% endif %}  
+
+      </div>
   </main>
+
+   
   </div>
 </div>
 <script>
-     var audio = document.getElementById('audio');
+    mt = document.querySelector("#mute_img")
+    var audio = document.getElementById('audio');
+    
+    inp = document.querySelector("input[type=range]")
+    mt.addEventListener('click', () => {
+       
+        if (audio.muted == true) {
+            audio.muted = false
+            audio.volume = 0.5
+            inp.value = 50
+        }
+        else {
+            audio.muted = true
+            
+            inp.value = 0
+
+        }
+    })
+      audio.volume = 0.5
   var playbtn = document.getElementById("playbtn");
 
   var playbtns = document.querySelectorAll(".playButtons");
@@ -83,17 +320,32 @@
 
     }
   })
-  
+  radio_img = 'https://i.pinimg.com/originals/5c/4a/1c/5c4a1cef8a1ebd3584fac99c817b173c.gif' 
   radio_id = '{{ radio.id }}'
+  radio_name = '{{ radio.radio_name }}'
+
+  document.querySelector("#radioNameTop").innerHTML = radio_name
       function getCurrentName() {
         fetch(`/api/currentPlaying/${radio_id}`)
         .then(response => response.json())
         .then(data => {
-          document.querySelector("#currentPlaying").innerHTML = data['playing']
-            if ( data['img'] != "" || data['img'] != null) {
+          t = data['playing'].split("-")
+    
+          if (t.length < 1) {
+            document.querySelector("#currentPlaying1").innerHTML = t[0]
+            document.querySelector("#currentPlaying2").innerHTML = t[1]
+          } 
+          else {
+            document.querySelector("#currentPlaying1").innerHTML = t[0]
+          }
+       
+            if ( data['img'] != "" && data['img'] != null) {
                 document.querySelector("#imgRadio").src = data['img']
+              }
+              else {
+               document.querySelector("#imgRadio").src = radio_img
             }
-            console.log(data)
+
          
         })
       
@@ -102,6 +354,8 @@
       setInterval(function(){
         getCurrentName()
       }, 10000);
+
+
 </script>
 
 {% endblock %}

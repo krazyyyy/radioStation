@@ -1,0 +1,40 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% block title %} {{ news.title }} {% endblock %}
+
+{% block body %}
+    <style>
+        .mvp-main-box {
+            align-items: center;
+            display: flex;
+            text-align: center;
+            font-size: 16px;
+            margin-top: 140px;
+        }
+    </style>
+
+    <div class="row allPage">
+        {% include 'frontend/sidebar.html' %}
+        <div class="wid-100 background-light pl-1 pr-1  ">
+        {% include 'frontend/header.html' %}
+        <div class="mvp-main-box">
+         
+            <div class="my-container">
+            <div class="center">
+            <h1 style="margin: 24px;"> slusajradio.live vam omogućuje pregled najnovijih vijesti.
+            kako biste pročitali željeni članak učinite to </h1>
+            <a class="color-pink" style="font-weight: bolder; font-size: 24px;" href="{{ news.link }}" rel="nofollow" id="redirect">KLIKOM OVDJE</a>
+            </div>
+            <div class="mvp-widget-ad left relative" style="margin-top: 150px;">
+
+          
+            {% if options.home_ad %}
+            <div>
+                {{ options.home_ad | safe }}
+            </div>
+            {% endif %}
+            
+            </div>
+        </div>
+    </div>
+{% endblock %}

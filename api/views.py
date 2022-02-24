@@ -4,11 +4,73 @@ from django.forms import model_to_dict
 import requests
 from bs4 import BeautifulSoup
 
-from stations.models import RadioList, RadioHistory, RadioSession, Category, Countries, RssFeed
+from stations.models import RadioList, RadioHistory, RadioSession, Category, Countries, RssFeed, UserSession, Favourite
 # Create your views here.
 
-def getRadios(request):
-    radios = RadioList.objects.all()
+def getRadios(request, country=1):
+    countryOBJ = Countries.objects.get(id=country)
+    
+    if int(country) == 1:
+        radios = RadioList.objects.filter(country=countryOBJ).exclude(popular=True).order_by("?")[:18]
+    else:
+        radios = RadioList.objects.filter(country=countryOBJ).exclude(popular=True).order_by("?")[:30]
+    li = []
+    for radio in radios:
+        n = model_to_dict(radio)
+        n.pop("radio_img", None)
+        if radio.radio_img:
+            n['img'] = radio.radio_img.url
+
+        li.append(n)
+    radio_feed = dict(feed=li)
+    return JsonResponse(radio_feed)
+
+def getPopularRadios(request, country=1):
+    countryOBJ = Countries.objects.get(id=country)
+    radios = RadioList.objects.filter(country=countryOBJ, popular=True).order_by("-id")[:12]
+    li = []
+    for radio in radios:
+        n = model_to_dict(radio)
+        n.pop("radio_img", None)
+        if radio.radio_img:
+            n['img'] = radio.radio_img.url
+
+        li.append(n)
+    radio_feed = dict(feed=li)
+    return JsonResponse(radio_feed)
+
+def AllRadios(request, country=1):
+    countryOBJ = Countries.objects.get(id=country)
+    radios = RadioList.objects.filter(country=country).order_by('radio_name')
+    li = []
+    for radio in radios:
+        n = model_to_dict(radio)
+        n.pop("radio_img", None)
+        if radio.radio_img:
+            n['img'] = radio.radio_img.url
+
+        li.append(n)
+    radio_feed = dict(feed=li)
+    return JsonResponse(radio_feed)
+
+def latest(request, country=1):
+    countryOBJ = Countries.objects.get(id=country)
+    radios = RadioList.objects.all().order_by('id')
+    li = []
+    for radio in radios:
+        n = model_to_dict(radio)
+        n.pop("radio_img", None)
+        if radio.radio_img:
+            n['img'] = radio.radio_img.url
+
+        li.append(n)
+    radio_feed = dict(feed=li)
+    return JsonResponse(radio_feed)
+
+
+def getRandomRadios(request, country):
+    countryOBJ = Countries.objects.get(id=country)
+    radios = RadioList.objects.filter(country=countryOBJ).order_by("?")[:6]
     li = []
     for radio in radios:
         n = model_to_dict(radio)
@@ -22,9 +84,17 @@ def getRadios(request):
 
 def getCurrentPlaying(request, pk):
     radio = RadioList.objects.get(id=pk)
-    r = requests.get(f"{radio.radio_link}currentsong?sid=1")
-    cur = r.content.decode()
+    if radio.radio_link:
+        try:
+            r = requests.get(f"{radio.radio_link}currentsong?sid=1")
+        except:
+            data = dict(playing="", img="")
+            return JsonResponse(data)
 
+        cur = r.content.decode()
+    else:
+        data = dict(playing="", img="")
+        return JsonResponse(data)
     try:
         imgg = cur.split("-")
         
@@ -36,21 +106,69 @@ def getCurrentPlaying(request, pk):
         cur_img = im.json()['artists'][0]['strArtistThumb']
     except:
         cur_img = ""
-    if not request.session.exists(request.session.session_key):
-        request.session.create()
-    history = RadioHistory.objects.filter(session=request.session.session_key, radio=radio)
-    if history.exists():
-       radio_history = history[0]
-    else:
-        radio_history = RadioHistory(session=request.session.session_key, radio=radio)
-        radio_history.save()
-    allPlaying = RadioSession.objects.filter(name=cur, history=radio_history)
-    if not allPlaying.exists():
-        new_record = RadioSession(name=cur, img_link=cur_img, history=radio_history)
-        new_record.save()
+    # if not request.session.exists(request.session.session_key):
+    #     request.session.create()
+    # history = RadioHistory.objects.filter(session=request.session.session_key, radio=radio)
+    # if history.exists():
+    #    radio_history = history[0]
+    # else:
+    #     radio_history = RadioHistory(session=request.session.session_key, radio=radio)
+    #     radio_history.save()
+    # allPlaying = RadioSession.objects.filter(name=cur, history=radio_history)
+    # if not allPlaying.exists():
+    #     new_record = RadioSession(name=cur, img_link=cur_img, history=radio_history)
+    #     new_record.save()
     
     data = dict(playing=cur, img=cur_img)
     return JsonResponse(data)
+
+def addFavourite(request, pk):
+    if not request.session.exists(request.session.session_key):
+        request.session.create()
+    session = UserSession.objects.filter(session=request.session.session_key)
+    if session.exists():
+        session = session[0]
+    else:
+        session = UserSession(session=request.session.session_key)
+        session.save()
+    radio = RadioList.objects.get(id=pk)
+    fav = Favourite.objects.filter(radio=radio, session=session)
+    if not fav.exists():
+        f = Favourite(radio=radio, session=session)
+        f.save()
+    return JsonResponse({"message" : "Radio Added"})
+
+def removeFavourite(request, pk):
+    if not request.session.exists(request.session.session_key):
+        request.session.create()
+    session = UserSession.objects.filter(session=request.session.session_key)
+    if session.exists():
+        session = session[0]
+    else:
+        session = UserSession(session=request.session.session_key)
+        session.save()
+    radio = RadioList.objects.get(id=pk)
+    fav = Favourite.objects.filter(radio=radio, session=session)
+    fav[0].delete()
+    return JsonResponse({"message" : "Radio Added"})
+
+def FavouriteList(request):
+    if not request.session.exists(request.session.session_key):
+        request.session.create()
+    session = UserSession.objects.filter(session=request.session.session_key)
+    fav = Favourite.objects.filter(session=session[0])
+
+    li = []
+
+    for radio in fav:
+        n = model_to_dict(radio.radio)
+        n.pop("radio_img", None)
+        if radio.radio.radio_img:
+            n['img'] = radio.radio.radio_img.url
+
+        li.append(n)
+    radio_feed = dict(feed=li)
+    return JsonResponse(radio_feed)
 
 def getRecentPlaying(request, pk):
     radio = RadioList.objects.get(id=pk)
@@ -86,8 +204,9 @@ def getRecents(request):
         return JsonResponse(radio_history)
     return JsonResponse({"message" : "No Histroy Yet"})
 
-def getRandomRadio(request):
-    radio = RadioList.objects.order_by('?')[0]
+def getRandomRadio(request, country=1):
+    country = Countries.objects.get(id=country)
+    radio = RadioList.objects.filter(country=country).order_by('?')[0]
     rad = dict(radio_id=radio.id, radio_name=radio.radio_name, link=radio.play_link)
     return JsonResponse(rad)
 
@@ -121,7 +240,10 @@ def getNews(request):
     for feed in feeds:
         if not feed.rss_feed:
             continue
-        url = requests.get(feed.rss_feed)
+        try:
+            url = requests.get(feed.rss_feed)
+        except:
+            continue
         soup = BeautifulSoup(url.content, 'xml')
         entries = soup.find_all('item')
         for i in entries:
@@ -136,7 +258,7 @@ def getNews(request):
                     des = ""
                 if not chk.exists() and i.link.text not in links_list:
                     links_list.append(i.link.text)
-                    insert_list.append(RssFeed(title=i.title.text, link=i.link.text, source=feed.radio_name, pub_date=pub_, description=des))
+                    insert_list.append(RssFeed(title=i.title.text, link=i.link.text, source_id=feed, country=feed.country, source=feed.radio_name, pub_date=pub_, description=des))
                 data['title'] = i.title.text
                 data['link'] = i.link.text
   
@@ -149,10 +271,44 @@ def getNews(request):
     return JsonResponse({"message" : "success"})
 
 def renderNews(request, pk):
-    news = RssFeed.objects.filter(source=pk).order_by('-id')[:3]
+    rd = RadioList.objects.get(id=pk)
+    news = rd.source_radio.all().order_by('-id')[:4]
+    # news = RssFeed.objects.filter(source__iexact=pk).order_by('-id')[:3]
     li = []
     for i in news:
         n = model_to_dict(i)
+        li.append(n)
+    feed = dict(feed=li)
+    return JsonResponse(feed)
+
+def renderHomeNews(request, country=1):
+    countryOBJ = Countries.objects.get(id=country)
+    news = RssFeed.objects.filter(country=countryOBJ).order_by('-id')[:12]
+    # news = RssFeed.objects.filter(source__iexact=pk).order_by('-id')[:3]
+    li = []
+    for i in news:
+        n = model_to_dict(i)
+        li.append(n)
+    feed = dict(feed=li)
+    return JsonResponse(feed)
+
+def renderRadioNews(request, country):
+    countryOBJ = Countries.objects.get(id=country)
+    news = RssFeed.objects.filter(country=countryOBJ).order_by('?')[:8]
+    # news = RssFeed.objects.filter(source__iexact=pk).order_by('-id')[:3]
+    li = []
+    for i in news:
+        n = model_to_dict(i)
+        li.append(n)
+    feed = dict(feed=li)
+    return JsonResponse(feed)
+
+def getSearches(requests, pk):
+    radios = RadioList.objects.filter(radio_name__contains=pk).order_by("?")[:3]
+    li = []
+    for i in radios:
+        n = model_to_dict(i)
+        n.pop("radio_img", None)
         li.append(n)
     feed = dict(feed=li)
     return JsonResponse(feed)

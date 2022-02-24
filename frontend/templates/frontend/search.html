@@ -1,0 +1,60 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% block title %} Radios {% endblock %}
+
+{% block body %}
+    <div class="row allPage">
+        {% include 'frontend/sidebar.html' %}
+        <div class="wid-100 background-light pl-1 pr-1  ">
+        {% include 'frontend/header.html' %}
+        <main class="row justify-between">
+            <div class="row wid-100 dir-col row-gap-2 ">
+              
+                <div class="background-white p-1  b-rad-18">
+                    <div class="row justify-between">
+                        <h2 class="color-pink text-uppercase mb-1">Results</h2>
+                        
+                    </div>
+                    <div id="radio-list" class="radio_cards row justify-between wrap">
+                        {% for radio in radios %}
+                        <a href="/radio/{{ radio.id }}/{{ radio.radio_name }}" class="radio_card col-2 col-4-tablet col-6-xs radioRename">
+                            <div class="radio_card_img img_container background-gray">
+                                <img src="{{ radio.radio_img.url }}">
+                            </div>
+                            <div class="radio_card_detail mt-halfrem text-center">
+                                <span class="lead "><strong>{{ radio.radio_name }}</strong></span>
+                            </div>
+                                </a>`
+                        {% endfor %}
+                    </div>
+                </div>
+               
+         
+
+            </div>
+      
+        </main>   
+        </div>
+
+    </div>
+    <div id="radio-modal" class="ebcf_modal">
+
+        <div class="ebcf_modal-content">
+          <span class="ebcf_close">&times;</span>
+          <div id="modal-content">
+      
+          </div>
+        </div>
+      
+      </div>
+      <script>
+          renames = document.querySelectorAll(".radioRename")
+          for (var i = 0; i < renames.length; i ++ ){ 
+              t = renames[i].href.replaceAll(" ", "-")
+              t = renames[i].href.replaceAll("%20", "-")
+
+              renames[i].setAttribute("href", t);
+          }
+      </script>
+  
+{% endblock %}

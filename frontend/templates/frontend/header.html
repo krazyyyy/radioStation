@@ -1,43 +1,115 @@
 {% load static %}
 
-<header class="row align-center row-gap-2 pr-1 mt-halfrem ">
-    <ul class="row navlist">
-        <li class="active">Music</li>
-        <li>Podcast</li>
-        <li>Radio</li>
-        <li>Live</li>
-    </ul>
-    <div class="header_search_wrapper ml-auto mr-1 hideontablet">
-        <input type="text" placeholder="Search... ">
-        <img src="{% static 'frontend/assets/search.svg' %}" alt="">
+<header class="row align-center row-gap-2 pr-1 mt-halfrem header_top">
+  
+    <div style="margin : auto;" class="header_search_wrapper ml-auto mr-1 search">
+        <form action="{% url 'search' %}" method="POST" id="searchFORM">
+            {% csrf_token %}
+            <input onchange="getResults()" type="text" id="searchItem" autocomplete="off" name="keyword" placeholder="Search... ">
+            <ul class="results" id="resultListSearch">
+               
+             
+            </ul>
+            <input type="hidden" name="country_id" value="{{ country.id }}">
+            <img src="{% static 'frontend/assets/search.svg' %}" id="searchBTN" alt="">
+        </form>
     </div>
-    <ul class="row notificationList align-center ml-auto hideonxs">
+    <ul class="row notificationList align-center ml-auto ">
         <li class="hideonmobile">
-            <img src="{% static 'frontend/assets/heart.svg' %}" alt="">
+            <img src="{% static 'frontend/assets/heart.svg' %}" alt="" style="cursor: pointer;">
         </li>
         <li class="notificationicon hideonmobile">
             <img class="ring" src="{% static 'frontend/assets/ring.svg' %}" alt="">
             <img class="ring1" src="{% static 'frontend/assets/ring2.svg' %}" alt="">
         </li>
-        <li class="country ml-halfrem">
-            <img src="" alt="">
-            <span>Crotia</span>
-            <img class="ml-1" src="{% static 'frontend/assets/chevron-down.svg' %}" alt="">
+        <li class="country ml-halfrem" style="position: relative;">
+            <div class="cursor-pointer drop-down-menu-btn" onclick="openDropDown()">
+                <span class="country0 countryFlagRound">{{ country.country_name }}</span>
+                <img class="ml-1" src="{% static 'frontend/assets/chevron-down.svg' %}" alt="">
+            </div>
+            <ul id="listCountry"
+            class='drop-down-menu ' >
+          
+           
+            </ul>
         </li>
 
     </ul>
 </header>
+<style>
+    .country0::before {
+        background : url('{{ country.country_flag }}') no-repeat  center center;
+        background-size: contain;
+    }
+</style>
+<script>
+    searchLI = document.querySelector("#resultListSearch")
+    function getResults() {
+    val = document.querySelector("#searchItem")
+    fetch(`/api/getSearches/${val.value}`)
+    .then(response => response.json())
+    .then(data => {
+        info = data['feed']
+        searchLI.innerHTML = ''
+        for (var i = 0; i < info.length; i ++ ) {
+            searchLI.innerHTML  += `
+            <li><a href="/radio/${info[i]['id']}/${info[i]['radio_name'].replaceAll(" ", "-")}">${info[i]['radio_name']}</a></li>
+            `
+        }
+        searchLI.classList.add('active_search')
+    })
+}
+srch = document.querySelector("#searchBTN")
+srch.addEventListener('click', () => { 
+    document.querySelector("#searchFORM").submit()
+})
+window.addEventListener('click', function(e){   
+    if (document.getElementById('resultListSearch').contains(e.target)){
+        searchLI.classList.add('active_search')
+        
+        // Clicked in box
+    } else{
+        searchLI.classList.remove('active_search')
+     
+        // Clicked outside the box
+    }
+    });
 
-<div class="row justify-between pt-halfrem align-center showontablet">
+    fetch("/api/getCountries")
+    .then(response => response.json())
+    .then(data => {
+        countries = data['countries']
+        li = document.querySelector("#listCountry")
+        for (var i = 0; i < countries.length; i ++ )
+        {
+            li.innerHTML += `
+            <style>
+                .country${i + 1}::before {
+                    background : url(${countries[i]['country_flag']}) no-repeat  center center;
+                    background-size: contain;
+                }
+            </style>
+            <a href="/country/${countries[i]['country_code']}"><li class="drop-down-item ">     <span class="country${i+1} countryFlagRound">${countries[i]['country_name']}</span>
+           
+            </li>     </a>
+            
+          
+            `
+        }
+    })
+    const openDropDown = ()=>{
+ 
+        document.querySelector('.drop-down-menu').classList.toggle('active')
+    }
+</script>
+<div class="row justify-between pt-halfrem align-center showontablet" style="margin:15px 0;">
     <div onclick="openSidebar()" class="leftBars bars cursor-pointer">
-        <span></span>
-        <span></span>
-        <span></span>
+        <img src="{% static 'frontend/assets/bars.svg' %}" class="barsHg" alt="">
     </div>
- <div class="logomob cursor-pointer"><a href="{% url 'index' %}"><h3 class="color-pink">Radio.Live</h3 ></a></div>
- <div onclick="openPlayHistory()" class="rightBars bars cursor-pointer">
-     <span></span>
-     <span class="ml-auto"></span>
-     <span></span>
+    <div class="logomob cursor-pointer"><a href="{% url 'index' %}"><h3 class="color-pink" id="radioNameTop">slusajradio.live</h3 ></a></div>
+        <div onclick="openPlayHistory()" class="rightBars bars cursor-pointer">
+            <img src="{% static 'frontend/assets/bars.svg' %}" id="barHistory" class="barsHg" alt="">
+     
  </div>
  </div>
+
